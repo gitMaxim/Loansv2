@@ -1,0 +1,195 @@
+﻿@using Loansv2.Models
+@model DetailedLoanAgreementViewModel
+
+@{
+    ViewBag.Title = "Информация о договоре";
+}
+
+<h2>Информация о договоре</h2>
+
+<div id="loanAgreement">
+    <h4></h4>
+    <hr />
+
+    @Html.AntiForgeryToken()
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.LoanAgreement.Number)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @Html.DisplayFor(model => model.LoanAgreement.Number)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LoanAgreement.CreditorId)
+        </dt>
+        <dd>
+            @Html.ActionLink(Html.DisplayFor(model => model.LoanAgreement.Creditor.Name).ToString(),
+                "Details", "Party", new { id = Model.LoanAgreement.CreditorId }, null)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LoanAgreement.CreditorProjectId)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @if (Model.LoanAgreement.CreditorProjectId == null)
+            {
+                @Html.DisplayFor(model => model.LoanAgreement.CreditorProjectId)
+            }
+            else
+            {
+                @Html.ActionLink(Html.DisplayFor(model => model.LoanAgreement.CreditorProject.Name).ToString(),
+                    "Details", "Project", new {id = Model.LoanAgreement.CreditorProjectId}, null)
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LoanAgreement.DebtorId)
+        </dt>
+        <dd>
+            @Html.ActionLink(Html.DisplayFor(model => model.LoanAgreement.Debtor.Name).ToString(),
+                "Details", "Party", new { id = Model.LoanAgreement.DebtorId }, null)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LoanAgreement.DebtorProjectId)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @if (Model.LoanAgreement.DebtorProjectId == null)
+            {
+                @Html.DisplayFor(model => model.LoanAgreement.DebtorProjectId)
+            }
+            else
+            {
+                @Html.ActionLink(Html.DisplayFor(model => model.LoanAgreement.DebtorProject.Name).ToString(),
+                    "Details", "Project", new {id = Model.LoanAgreement.DebtorProjectId}, null)
+            } 
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LoanAgreement.SignDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LoanAgreement.SignDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LoanAgreement.DeadlineDate)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @Html.DisplayFor(model => model.LoanAgreement.DeadlineDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LoanAgreement.Sum)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @($"{Model.LoanAgreement.Sum:N}")
+        </dd>
+        
+        @if (Model.LoanAgreement.Files.Any())
+        {
+            for (int i = 0; i < Model.LoanAgreement.Files.Count;)
+            {
+                var file = Model.LoanAgreement.Files.ElementAt(i);
+                <dt>
+                    @($"Файл {++i}")
+                </dt>
+                <dd>
+                    @Html.ActionLink(file.FileName, "Index", "File", new { id = file.Id }, null)
+                    <span style="margin-left: 30px">
+                        @Html.ActionLink("Удалить", "Delete", "File", new {id = file.Id}, null)
+                    </span>
+                </dd>
+            }
+        }
+
+        <dt></dt>
+        <dd style="margin-bottom: 30px">@Html.ActionLink("Добавить файл", "Create", "File", new { loanAgreementId = Model.LoanAgreement.Id }, null)</dd>
+    </dl>
+
+    @Html.ActionLink("Изменить", "Edit", new { id = Model.LoanAgreement.Id }) |
+    @Html.ActionLink("Удалить", "Delete", new { id = Model.LoanAgreement.Id }) |
+    @Html.ActionLink("Перейти к договорам", "Index")
+
+</div>
+
+
+<br />
+<br />
+@if (Model.Messages != null && Model.Messages.Any())
+{
+    <div style="margin-top: 15px; margin-bottom: 15px;">
+        @foreach (var msg in Model.Messages)
+        {
+            <p style="color: red;">@msg</p>
+        }
+    </div>
+}
+
+
+
+<div class="w3-bar w3-white">
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray w3-light-grey" onclick="openTab(event, 'Payments')">Последние платежи</button>
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray" onclick="openTab(event, 'Loans')">Выдачи и погашения займа</button>
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray" onclick="openTab(event, 'Percents')">Погашения процентов</button>
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray" onclick="openTab(event, 'AnnumRates')">Изменение ставки</button>
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray " onclick="openTab(event, 'CreditPlan')">План выдачи</button>
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray" onclick="openTab(event, 'DebtPlan')">План погашения</button>
+</div>
+
+<div id="Payments" class="w3-container w3-border tab">
+    <p style="margin-top: 15px; margin-bottom: 15px">
+        @Html.ActionLink("Добавить", "Create", "Payment", new { loanAgreementId = Model.LoanAgreement.Id, paymentType = PaymentType.Credit }, null)
+    </p>
+    @Html.Partial("~/Views/Payment/Short.cshtml", Model.Payments.AsEnumerable().Reverse())
+</div>
+
+<div id="Loans" class="w3-container w3-border tab" style="display: none">
+    @Html.Partial("~/Views/LoanAgreement/Loans.cshtml", Model.LoanStats)
+</div>
+
+<div id="Percents" class="w3-container w3-border tab" style="display: none">
+    @Html.Partial("~/Views/LoanAgreement/Percents.cshtml", Model.PercentStats)
+</div>
+
+<div id="AnnumRates" class="w3-container w3-border tab" style="display: none">
+    <p style="margin-top: 15px; margin-bottom: 15px">
+        @Html.ActionLink("Добавить", "Create", "AnnumRate", new { loanAgreementId = Model.LoanAgreement.Id }, null)
+    </p>
+    @Html.Partial("~/Views/AnnumRate/Index.cshtml", Model.LoanAgreement.AnnumRates.OrderBy(r => r.Date))
+</div>
+
+<div id="CreditPlan" class="w3-container w3-border tab" style="display: none">
+    <p style="margin-top: 15px; margin-bottom: 15px">
+        @Html.ActionLink("Добавить", "Create", "CreditPlan", new { loanAgreementId = Model.LoanAgreement.Id }, null)
+    </p>
+    @Html.Partial("~/Views/CreditPlan/Index.cshtml", Model.LoanAgreement.CreditPlans.OrderBy(c => c.Date))
+</div>
+
+<div id="DebtPlan" class="w3-container w3-border tab" style="display: none">
+    <p style="margin-top: 15px; margin-bottom: 15px">
+        @Html.ActionLink("Добавить", "Create", "DebtPlan", new { loanAgreementId = Model.LoanAgreement.Id }, null)
+    </p>
+    @Html.Partial("~/Views/DebtPlan/Index.cshtml", Model.LoanAgreement.DebtPlans.OrderBy(d => d.Date))
+</div>
+
+
+@section Scripts {
+    <script>
+        function openTab(evt, tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("tab");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-light-grey", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " w3-light-grey";
+        }
+    </script>
+}

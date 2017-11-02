@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Loansv2.Models.ProjectCreditorsViewModel>
+
+
+@if (Model == null || !Model.Any())
+{
+    <p style="margin-top: 15px; margin-bottom: 15px">Нет данных</p>
+}
+else
+{
+    <div id="creditsChartContainer" style="width: 80%; height: 400px; margin-top: 30px; margin-bottom: 30px">
+    </div>
+
+    <table class="table" style="position: relative">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Creditor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Debtor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DebtorProject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SignDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeadlineDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LoanedSum)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr style="cursor: pointer" onclick="location.href = '@(Url.Action("Details", "LoanAgreement", new { id = item.Id }))'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Creditor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Debtor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DebtorProject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SignDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeadlineDate)
+                </td>
+                <td>
+                    @($"{item.LoanedSum:N} / {item.Sum:N}")
+                </td>
+            </tr>
+        }
+    </table>
+}
+

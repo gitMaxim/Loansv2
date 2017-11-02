@@ -1,0 +1,81 @@
+﻿@model Loansv2.Models.LoanAgreement
+
+@{
+    ViewBag.Title = "Удаление договора";
+}
+
+<h2>Вы уверены, что хотите удалить этот договор?</h2>
+
+<div>
+    <h4>Вместе ним будет удалена связанная информация о планах выдачи, погашения займа, изменении процентной ставки, платёжная история и файлы договоров</h4>
+    <p style="color: red; margin-top: 30px; margin-bottom: 15px" class="validation-summary-errors">@ViewBag.ConcurrencyErrorMessage</p>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Number)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @Html.DisplayFor(model => model.Number)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreditorId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Creditor.Name)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.CreditorProjectId)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @(Model.CreditorProjectId == null ? Html.DisplayFor(modelItem => Model.CreditorProjectId) : Html.DisplayFor(modelItem => Model.CreditorProject.Name))
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DebtorId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Debtor.Name)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.DebtorProjectId)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @(Model.DebtorProjectId == null ? Html.DisplayFor(modelItem => Model.DebtorProjectId) : Html.DisplayFor(modelItem => Model.DebtorProject.Name))
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SignDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SignDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeadlineDate)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @Html.DisplayFor(model => model.DeadlineDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Sum)
+        </dt>
+        <dd>
+            @($"{Model.Sum:N}")
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.RowVersion)
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Перейти к договору", "Details", new { id = Model.Id })
+        </div>
+    }
+</div>

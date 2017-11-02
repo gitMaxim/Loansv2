@@ -1,0 +1,90 @@
+﻿@model Loansv2.Models.PhysicalParty
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Информация о физическом лице</h2>
+
+<div>
+    <h4></h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @Html.HiddenFor(model => model.Id)
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MiddleName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MiddleName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Party.VatId)
+        </dt>
+        <dd style="margin-bottom: 15px">
+            @Html.DisplayFor(model => model.Party.VatId)
+        </dd>
+
+        @if (Model.Party.Phones.Any())
+        {
+            for (int i = 0; i < Model.Party.Phones.Count;)
+            {
+                var phone = Model.Party.Phones.ElementAt(i);
+                <dt>
+                    @($"{Html.DisplayNameFor(p => phone.Number)} {++i}")
+                </dt>
+                <dd>
+                    @Html.DisplayFor(p => phone.Number)
+                    <span style="margin-left: 30px">
+                        @Html.ActionLink("Изменить", "Edit", "Phone", new {id = phone.Id}, null)
+                        | @Html.ActionLink("Удалить", "Delete", "Phone", new {id = phone.Id}, null)
+                    </span>
+                </dd>
+            }
+        }
+
+        <dt></dt>
+        <dd style="margin-bottom: 15px">@Html.ActionLink("Добавить телефон", "Create", "Phone", new {partyId = Model.Id}, null)</dd>
+
+        @if (Model.Party.Emails.Any())
+        {
+            for (int i = 0; i < Model.Party.Emails.Count;)
+            {
+                var email = Model.Party.Emails.ElementAt(i);
+                <dt>
+                    @($"{Html.DisplayNameFor(p => email.Address)} {++i}")
+                </dt>
+                <dd>
+                    @Html.DisplayFor(p => email.Address)
+                    <span style="margin-left: 30px">
+                        @Html.ActionLink("Изменить", "Edit", "Email", new {id = email.Id}, null)
+                        | @Html.ActionLink("Удалить", "Delete", "Email", new {id = email.Id}, null)
+                    </span>
+                </dd>
+            }
+        }
+
+        <dt></dt>
+        <dd>@Html.ActionLink("Добавить почту", "Create", "Email", new {partyId = Model.Id}, null)</dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Изменить", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Удалить", "Delete", new { id = Model.Id }) |
+    @Html.ActionLink("Перейти к контрагентам", "Index", "Party")
+</p>

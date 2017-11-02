@@ -1,0 +1,123 @@
+﻿@using Loansv2.Models
+@using PagedList.Mvc
+@model PartiesViewModel
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Контрагенты";
+}
+
+<h2>Контрагенты</h2>
+
+<p>
+    @Html.ActionLink("Добавить", "Create")
+</p>
+
+
+@using (Html.BeginForm())
+{
+    <br/>
+    <div class="form-horizontal">
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.EnumDropDownListFor(model => model.SearchParam, new { @Class = "form-control" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                @Html.EditorFor(model => model.SearchText, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <input type="submit" value="&#x1F50E;" class="btn btn-default" style="margin-left: 5px;" />
+            </div>
+        </div>
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Party.Name).ToString(), "Index",
+                new
+                {
+                    sortParam = PartyParamToSortBy.Name, 
+                    sortOrder = Model.NextSortOrder(PartyParamToSortBy.Name),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Party.VatId).ToString(), "Index",
+                new
+                {
+                    sortParam = PartyParamToSortBy.Type,
+                    sortOrder = Model.NextSortOrder(PartyParamToSortBy.Type),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Party.PartyType).ToString(), "Index",
+                new
+                {
+                    sortParam = PartyParamToSortBy.Type,
+                    sortOrder = Model.NextSortOrder(PartyParamToSortBy.Type),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+    </tr>
+
+    @if (Model.Parties == null)
+    {
+        @Html.Raw("Нет данных")
+    }
+    else
+    {
+        foreach (var item in Model.Parties)
+        {
+            <tr style="cursor: pointer" onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VatId)
+                </td>
+                <td>
+                    @Html.Raw(item.DisplayTypeName())
+                </td>
+            </tr>
+        }
+    }
+</table>
+<br />
+
+Стр. @(Model.Parties.PageCount < Model.Parties.PageNumber ? 0 : Model.Parties.PageNumber) из @Model.Parties.PageCount
+
+@Html.PagedListPager(Model.Parties, page => Url.Action("Index",
+    new
+    {
+        sortParam = Model.SortParam,
+        sortOrder = Model.SortOrder,
+        searchParam = Model.SearchParam,
+        searchText = Model.SearchText,
+        page
+    }))
+
+@section Scripts {
+    <script type="text/javascript">
+        $("tr").not(':first').hover(
+            function () {
+                $(this).css("background","whitesmoke");
+            },
+            function () {
+                $(this).css("background","");
+            }
+        );
+    </script>
+}

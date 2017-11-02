@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Loansv2.Models.Payment>
+
+
+@if (Model == null || !Model.Any())
+{
+    <p style="margin-bottom: 15px">Нет данных</p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Value)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @($"{item.Value:N}")
+                </td>
+                <td>
+                    @Html.ActionLink("Изменить", "Edit", "Payment", new {id = item.Id}, null) |
+                    @Html.ActionLink("Удалить", "Delete", "Payment", new {id = item.Id}, null)
+                </td>
+            </tr>
+        }
+
+    </table>
+}

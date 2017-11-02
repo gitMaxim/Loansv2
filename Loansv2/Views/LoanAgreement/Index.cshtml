@@ -1,0 +1,183 @@
+﻿@using Loansv2.Models
+@using PagedList.Mvc;
+@model LoanAgreementsViewModel
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Договоры займа";
+}
+
+<h2>Договоры займа</h2>
+
+<p>
+    @Html.ActionLink("Добавить", "Create")
+</p>
+
+@using (Html.BeginForm())
+{
+    <br/>
+    <div class="form-horizontal">
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.EnumDropDownListFor(model => model.SearchParam, new {@Class = "form-control"})
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                @Html.EditorFor(model => model.SearchText, new {htmlAttributes = new {@class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <input type="submit" value="&#x1F50E;" class="btn btn-default" style="margin-left: 5px;"/>
+            </div>
+        </div>
+    </div>
+}
+
+<table class="table" id="tblLoans">
+    <tr>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LoanAgreement.Number).ToString(), "Index",
+                new
+                {
+                    sortParam = LoanAgreementParamToSortBy.Number,
+                    sortOrder = Model.NextSortOrder(LoanAgreementParamToSortBy.Number),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LoanAgreement.CreditorId).ToString(), "Index",
+                new
+                {
+                    sortParam = LoanAgreementParamToSortBy.Creditor,
+                    sortOrder = Model.NextSortOrder(LoanAgreementParamToSortBy.Creditor),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LoanAgreement.CreditorProjectId).ToString(), "Index",
+                new
+                {
+                    sortParam = LoanAgreementParamToSortBy.CreditorProject,
+                    sortOrder = Model.NextSortOrder(LoanAgreementParamToSortBy.CreditorProject),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LoanAgreement.DebtorId).ToString(), "Index",
+                new
+                {
+                    sortParam = LoanAgreementParamToSortBy.Debtor,
+                    sortOrder = Model.NextSortOrder(LoanAgreementParamToSortBy.Debtor),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LoanAgreement.DebtorProjectId).ToString(), "Index",
+                new
+                {
+                    sortParam = LoanAgreementParamToSortBy.DebtorProject,
+                    sortOrder = Model.NextSortOrder(LoanAgreementParamToSortBy.DebtorProject),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LoanAgreement.SignDate).ToString(), "Index",
+                new
+                {
+                    sortParam = LoanAgreementParamToSortBy.SignDate,
+                    sortOrder = Model.NextSortOrder(LoanAgreementParamToSortBy.SignDate),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LoanAgreement.DeadlineDate).ToString(), "Index",
+                new
+                {
+                    sortParam = LoanAgreementParamToSortBy.DeadlineDate,
+                    sortOrder = Model.NextSortOrder(LoanAgreementParamToSortBy.DeadlineDate),
+                    searchParam = Model.SearchParam,
+                    searchText = Model.SearchText
+                })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.LoanAgreement.Sum).ToString(), "Index",
+                new
+                {
+                    sortParam = LoanAgreementParamToSortBy.Sum,
+                    sortOrder = Model.NextSortOrder(LoanAgreementParamToSortBy.Sum),
+                    searchParam = Model.SearchParam, 
+                    searchText = Model.SearchText
+                })
+        </th>
+    </tr>
+
+    @if (Model.LoanAgreements == null) {
+        @Html.Raw("Нет данных")
+    }
+    else
+    {
+        foreach (var item in Model.LoanAgreements)
+        {
+            <tr style="cursor: pointer" onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Creditor.Name)
+                </td>
+                <td>
+                    @(item.CreditorProjectId == null ? Html.DisplayFor(modelItem => item.CreditorProjectId) : Html.DisplayFor(modelItem => item.CreditorProject.Name))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Debtor.Name)
+                </td>
+                <td>
+                    @(item.DebtorProjectId == null ? Html.DisplayFor(modelItem => item.DebtorProjectId) : Html.DisplayFor(modelItem => item.DebtorProject.Name))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SignDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeadlineDate)
+                </td>
+                <td>
+                    @($"{item.Sum:N}")
+                </td>
+            </tr>
+        }
+    }
+</table>
+<br />
+
+Стр. @(Model.LoanAgreements.PageCount < Model.LoanAgreements.PageNumber ? 0 : Model.LoanAgreements.PageNumber) из @Model.LoanAgreements.PageCount
+
+@Html.PagedListPager(Model.LoanAgreements, page => Url.Action("Index",
+    new
+    {
+        sortParam = Model.SortParam, sortOrder = Model.SortOrder,
+        searchParam = Model.SearchParam, searchText = Model.SearchText, page
+    }))
+
+@section Scripts {
+    <script type="text/javascript">
+        $("tr").not(':first').hover(
+            function () {
+                $(this).css("background","whitesmoke");
+            }, 
+            function () {
+                $(this).css("background","");
+            }
+        );
+    </script>
+}

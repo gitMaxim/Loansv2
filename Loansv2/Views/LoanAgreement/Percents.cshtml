@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Loansv2.Models.PercentViewModel>
+
+
+@if (Model == null || !Model.Any())
+{
+    <p style="margin-bottom: 15px; margin-top: 15px">Нет данных</p>
+}
+else
+{ 
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.Raw("Платёж")
+            </th>
+            <th>
+                @Html.Raw("Начисления")
+            </th>
+            <th>
+                @Html.Raw("Остаток")
+            </th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @item.DisplayValue(item.Payment)
+            </td>
+            <td>
+                @item.DisplayValue(item.Value)
+            </td>
+            <td>
+                @item.DisplayValue(item.Aux)
+            </td>
+
+        </tr>
+    }
+
+    </table>
+}

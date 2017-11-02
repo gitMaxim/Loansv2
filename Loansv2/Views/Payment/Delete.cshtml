@@ -1,0 +1,60 @@
+﻿@model Loansv2.Models.Payment
+
+@{
+    ViewBag.Title = "Удаление платежа";
+}
+
+<h2>Вы уверены, что хотите удалить этот платёж?</h2>
+
+<h3></h3>
+<div>
+    <h4></h4>
+    <p style="color: red; margin-top: 30px; margin-bottom: 15px" class="validation-summary-errors">@ViewBag.ConcurrencyErrorMessage</p>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.LoanAgreement.Number)
+        </dt>
+        <dd>
+            @Html.ActionLink(Html.DisplayFor(model => model.LoanAgreement.Number).ToString(), "Details", "LoanAgreement",
+                new { id = Model.LoanAgreement }, null)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentType)
+        </dt>
+        <dd>
+            @Html.Raw(Model.DisplayTypeName())
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Value)
+        </dt>
+        <dd>
+            @($"{Model.Value:N}")
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.RowVersion)
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Перейти к платежам", "Index")
+            @if (Model.LoanAgreementId > 0)
+            {
+                @Html.Raw("| ")
+                @Html.ActionLink("Перейти к договору", "Details", "LoanAgreement", new {id = Model.LoanAgreementId}, null)
+            }
+        </div>
+    }
+</div>

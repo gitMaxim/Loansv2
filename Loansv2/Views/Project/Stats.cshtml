@@ -1,0 +1,106 @@
+﻿@model Loansv2.Models.ProjectStatsViewModel
+
+@{
+    ViewBag.Title = "Проекты: статистика";
+}
+
+<h2>Проекты: статистика</h2>
+
+<p>
+    @Html.ActionLink("Перейти к проектам", "Index")
+</p>
+
+
+<div class="w3-bar w3-white" style="margin-top: 30px">
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray w3-light-grey"
+            onclick="openTab(event, 'ProjectsCredits')">
+        Выдано проектами
+    </button>
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray"
+            onclick="openTab(event, 'ProjectsDebts')">
+        Погашено проектами
+    </button>
+</div>
+
+
+<div id="ProjectsCredits" class="w3-container w3-border tab">
+    @if (Model.CreditDataPoints.Count == 0)
+    {
+        <p style="margin-top: 15px; margin-bottom: 15px">Нет данных</p>
+    }
+    else
+    {
+        <div id="ProjectsCreditsChart" style="width: 80%; height: 400px; margin-top: 30px; margin-bottom: 30px">
+        </div>
+    }
+</div>
+
+<div id="ProjectsDebts" class="w3-container w3-border tab" style="display: none;">
+    @if (Model.DebtDataPoints.Count == 0)
+    {
+        <p style="margin-top: 15px; margin-bottom: 15px">Нет данных</p>
+    }
+    else
+    {
+        <div id="ProjectsDebtsChart" style="width: 80%; height: 400px; margin-top: 30px; margin-bottom: 30px">
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("tab");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-light-grey", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " w3-light-grey";
+        }
+    </script>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            var creditsChart = new CanvasJS.Chart("ProjectsCreditsChart",
+                {
+                    theme: "theme2",
+                    zoomEnabled: true,
+                    animationEnabled: false,
+                    title: {
+                        text: ""
+                    },
+                    data: [
+                        {
+                            type: "pie",
+                            dataPoints: @Html.Raw(Model.JsonCreditPoints),
+                        }
+                    ]
+                });
+            creditsChart.render();
+
+            var debtsChart = new CanvasJS.Chart("ProjectsDebtsChart",
+                {
+                    theme: "theme2",
+                    zoomEnabled: true,
+                    animationEnabled: false,
+                    title: {
+                        text: ""
+                    },
+                    data: [
+                        {
+                            type: "pie",
+                            dataPoints: @Html.Raw(Model.JsonDebtPoints),
+                        }
+                    ]
+                });
+            debtsChart.render();
+        };
+    </script>
+}

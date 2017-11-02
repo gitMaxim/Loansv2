@@ -1,0 +1,119 @@
+﻿@using PagedList.Mvc;
+@model Loansv2.Models.ProjectDetailsViewModel
+    
+
+@{
+    ViewBag.Title = "Информация о проекте";
+}
+
+<h2>Проект "@Html.DisplayFor(model => model.Name)"</h2>
+
+<p>
+    @Html.ActionLink("Изменить", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Удалить", "Delete", new { id = Model.Id }) |
+    @Html.ActionLink("Перейти к проектам", "Index")
+</p>
+
+<div class="w3-bar w3-white" style="margin-top: 30px">
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray w3-light-grey"
+            onclick="openTab(event, 'ProjectCreditPayments')">
+        Выдано проектом
+    </button>
+    <button class="w3-bar-item w3-button tablink w3-hover-light-gray"
+            onclick="openTab(event, 'ProjectDebtPayments')">
+        Погашено проектом
+    </button>
+</div>
+
+<div id="ProjectCreditPayments" class="w3-container w3-border tab">
+    @Html.Partial("~/Views/Project/Creditors.cshtml", Model.CreditAgreements)
+</div>
+
+<div id="ProjectDebtPayments" class="w3-container w3-border tab" style="display: none;">
+    @Html.Partial("~/Views/Project/Debtors.cshtml", Model.DebtAgreements)
+</div>
+
+
+@section Scripts {
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("tab");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-light-grey", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " w3-light-grey";
+        }
+    </script>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            var creditChart = new CanvasJS.Chart("creditsChartContainer",
+            {
+                theme: "theme2",
+                zoomEnabled: true,
+                animationEnabled: false,
+                title: {
+                    text: ""
+                },
+                axisX:{
+                    title: "",
+                    gridThickness: 1,
+                },
+                axisY:{
+                    title: "",
+                    gridThickness: 1
+                },
+                data: [
+                {
+                    type: "line",
+                    dataPoints: @Html.Raw(Model.JsonCreditPaymentPoints),
+                }
+                ]
+            });
+            creditChart.render();
+
+            var debtChart = new CanvasJS.Chart("debtsChartContainer",
+                {
+                    theme: "theme2",
+                    zoomEnabled: true,
+                    animationEnabled: false,
+                    title: {
+                        text: ""
+                    },
+                    axisX:{
+                        title: "",
+                        gridThickness: 1,
+                    },
+                    axisY:{
+                        title: "",
+                        gridThickness: 1
+                    },
+                    data: [
+                        {
+                            type: "line",
+                            dataPoints: @Html.Raw(Model.JsonDebtPaymentPoints),
+                        }
+                    ]
+                });
+            debtChart.render();
+    };
+    </script>
+
+    <script type="text/javascript">
+        $("tr").not(':first').hover(
+            function() {
+                $(this).css("background", "whitesmoke");
+            },
+            function() {
+                $(this).css("background", "");
+            }
+        );
+    </script>
+}

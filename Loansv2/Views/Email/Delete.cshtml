@@ -1,0 +1,42 @@
+﻿@model Loansv2.Models.Email
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Вы уверены, что хотите удалить эту почту?</h2>
+
+<div>
+    @if (Model.PartyId != 0) {
+        <h4>@Model.Party.Name</h4>
+    }
+    <p style="color: red; margin-top: 30px; margin-bottom: 15px" class="validation-summary-errors">@ViewBag.ConcurrencyErrorMessage</p>
+    <hr/>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Party.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Party.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.RowVersion)
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default"/> |
+            @Html.ActionLink("Перейти к контрагенту", "Details", "Party", new { id = Model.PartyId }, null)
+        </div>
+    }
+</div>

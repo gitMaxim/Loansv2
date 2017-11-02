@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Loansv2.Models.Payment>
+
+@{
+    ViewBag.Title = "Платежи";
+}
+
+<h2>Платежи</h2>
+
+<p>
+    @Html.ActionLink("Добавить", "Create")
+</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.LoanAgreementId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LoanAgreement.CreditorId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LoanAgreement.DebtorId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Value)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.LoanAgreement.Number)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LoanAgreement.Creditor.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LoanAgreement.Debtor.Name)
+        </td>
+        <td>
+            @item.DisplayTypeName()
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @($"{item.Value:N}")
+        </td>
+        <td>
+            @Html.ActionLink("Перейти к договору", "Details", "LoanAgreement", new { id = item.Id }, null) |
+            @Html.ActionLink("Изменить", "Edit", new {id = item.Id}) |
+            @Html.ActionLink("Удалить", "Delete", new {id = item.Id})
+        </td>
+    </tr>
+}
+</table>

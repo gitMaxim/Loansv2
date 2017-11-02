@@ -1,0 +1,81 @@
+﻿@using Loansv2.Models
+@model PhysicalParty
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Вы уверены, что хотите удалить это физ. лицо?</h2>
+
+<div>
+    @{
+        var loanAgreements = ViewBag.LoanAgreements as List<LoanAgreement>;
+        var loanConnected = loanAgreements != null && loanAgreements.Any();
+        if (loanConnected)
+        {
+            <h4>Необходимо сперва удалить все связанные с ним договоры</h4>
+            <hr/>
+            <dl class="dl-horizontal">
+                @foreach (var item in loanAgreements)
+                {
+                    <dt>@($"Договор №{item.Number}")</dt>
+                    <dd>@Html.ActionLink("Показать", "Details", "LoanAgreement", new {id = item.Id}, null)</dd>
+                }
+            </dl>
+        }
+        else
+        {
+            <h4>Вместе с ним будет удалена информация о всех связанных телефонах, адресах эл. почты</h4>
+            <p style="color: red; margin-top: 30px; margin-bottom: 15px" class="validation-summary-errors">@ViewBag.ConcurrencyErrorMessage</p>
+            <hr/>
+        }
+
+        @Html.HiddenFor(model => model.Id)
+
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.MiddleName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.MiddleName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Party.VatId)
+            </dt>
+            <dd style="margin-bottom: 15px">
+                @Html.DisplayFor(model => model.Party.VatId)
+            </dd>
+        </dl>
+
+        using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.RowVersion)
+
+            <div class="form-actions no-color">
+                @if (!loanConnected)
+                {
+                    <input type="submit" value="Удалить" class="btn btn-default"/>
+                    @Html.Raw(" | ")
+                }
+                @Html.ActionLink("Перейти к контрагенту", "Details", "PhysicalParty", new {id = Model.Id}, null)
+            </div>
+        }
+    }
+</div>
